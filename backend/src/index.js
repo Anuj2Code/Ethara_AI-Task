@@ -47,6 +47,10 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
 });
 
+// Health check
+app.get("/", (req, res) => {
+  res.json({ message: "TaskFlow API is running 🚀" });
+});
 
 app.use(express.static(path.join(__dirname, "../frontend/dist")));
 
