@@ -7,7 +7,7 @@
     "dev:backend": "cd backend && npm run dev",
     "dev:frontend": "cd frontend && npm run dev",
     "build": "cd frontend && npm install && npx vite build",
-    "start": "node backend/src/index.production.js"
+    "start": "cd backend && npm install && node src/index.js"
   },
   "devDependencies": {
     "concurrently": "^8.2.2"
