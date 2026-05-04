@@ -1,3 +1,4 @@
+const path  = require('path')
 const express = require('express');
 const cors = require('cors');
 const dotenv = require('dotenv');
@@ -46,5 +47,11 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT} [${process.env.NODE_ENV || 'development'}]`);
 });
 
+
+app.use(express.static(path.join(__dirname, "../frontend/dist")));
+
+app.get("*", (req, res) => {
+  res.sendFile(path.resolve(__dirname, "../frontend/dist/index.html"));
+});
 
 console.log(process.env.MONGODB_URI);
