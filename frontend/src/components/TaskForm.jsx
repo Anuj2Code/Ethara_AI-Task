@@ -2,15 +2,19 @@ import React, { useState } from 'react';
 import { FormGroup } from './UI';
 import { fmtDateInput } from '../utils/helpers';
 
-export default function TaskForm({ task, projects, users, currentUser, onSave, onClose, loading }) {
-  const availableProjects = currentUser.role === 'admin'
-    ? projects
-    : projects.filter((p) => p.members?.some((m) => (m._id || m) === currentUser._id));
+export default function TaskForm({ task, users, currentUser, onSave, onClose, loading }) {
+
+  // ✅ Static project options
+  const availableProjects = [
+    { _id: 'web-design', name: 'Web Design' },
+    { _id: 'mobile-app', name: 'Mobile App' },
+    { _id: 'api-integration', name: 'API Integration' },
+  ];
 
   const [form, setForm] = useState({
     title: task?.title || '',
     description: task?.description || '',
-    projectId: task?.projectId?._id || task?.projectId || availableProjects[0]?._id || '',
+    projectId: task?.projectId || availableProjects[0]._id,
     assignedTo: task?.assignedTo?._id || task?.assignedTo || currentUser._id,
     status: task?.status || 'todo',
     priority: task?.priority || 'medium',
@@ -19,13 +23,17 @@ export default function TaskForm({ task, projects, users, currentUser, onSave, o
 
   const set = (k, v) => setForm((f) => ({ ...f, [k]: v }));
 
-  const selectedProject = projects.find((p) => p._id === form.projectId);
-  const projectMembers = selectedProject
-    ? users.filter((u) => selectedProject.members?.some((m) => (m._id || m) === u._id))
-    : users;
+  // ✅ Now using static projects
+  const selectedProject = availableProjects.find(
+    (p) => p._id === form.projectId
+  );
+
+  // ✅ No project-member filtering (since static)
+  const projectMembers = users;
 
   function handleSubmit() {
     if (!form.title.trim()) return;
+
     onSave({
       ...form,
       dueDate: form.dueDate || null,
@@ -56,17 +64,27 @@ export default function TaskForm({ task, projects, users, currentUser, onSave, o
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
         <FormGroup label="Project">
-          <select value={form.projectId} onChange={(e) => set('projectId', e.target.value)}>
+          <select
+            value={form.projectId}
+            onChange={(e) => set('projectId', e.target.value)}
+          >
             {availableProjects.map((p) => (
-              <option key={p._id} value={p._id}>{p.name}</option>
+              <option key={p._id} value={p._id}>
+                {p.name}
+              </option>
             ))}
           </select>
         </FormGroup>
 
         <FormGroup label="Assign To">
-          <select value={form.assignedTo} onChange={(e) => set('assignedTo', e.target.value)}>
+          <select
+            value={form.assignedTo}
+            onChange={(e) => set('assignedTo', e.target.value)}
+          >
             {projectMembers.map((u) => (
-              <option key={u._id} value={u._id}>{u.name}</option>
+              <option key={u._id} value={u._id}>
+                {u.name}
+              </option>
             ))}
           </select>
         </FormGroup>
@@ -74,7 +92,10 @@ export default function TaskForm({ task, projects, users, currentUser, onSave, o
 
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10 }}>
         <FormGroup label="Status">
-          <select value={form.status} onChange={(e) => set('status', e.target.value)}>
+          <select
+            value={form.status}
+            onChange={(e) => set('status', e.target.value)}
+          >
             <option value="todo">To Do</option>
             <option value="progress">In Progress</option>
             <option value="done">Done</option>
@@ -82,7 +103,10 @@ export default function TaskForm({ task, projects, users, currentUser, onSave, o
         </FormGroup>
 
         <FormGroup label="Priority">
-          <select value={form.priority} onChange={(e) => set('priority', e.target.value)}>
+          <select
+            value={form.priority}
+            onChange={(e) => set('priority', e.target.value)}
+          >
             <option value="high">High</option>
             <option value="medium">Medium</option>
             <option value="low">Low</option>
@@ -91,12 +115,29 @@ export default function TaskForm({ task, projects, users, currentUser, onSave, o
       </div>
 
       <FormGroup label="Due Date">
-        <input type="date" value={form.dueDate} onChange={(e) => set('dueDate', e.target.value)} />
+        <input
+          type="date"
+          value={form.dueDate}
+          onChange={(e) => set('dueDate', e.target.value)}
+        />
       </FormGroup>
 
-      <div style={{ display: 'flex', gap: 8, justifyContent: 'flex-end', marginTop: 16 }}>
-        <button className="btn btn-ghost" onClick={onClose}>Cancel</button>
-        <button className="btn btn-primary" onClick={handleSubmit} disabled={loading}>
+      <div
+        style={{
+          display: 'flex',
+          gap: 8,
+          justifyContent: 'flex-end',
+          marginTop: 16,
+        }}
+      >
+        <button className="btn btn-ghost" onClick={onClose}>
+          Cancel
+        </button>
+        <button
+          className="btn btn-primary"
+          onClick={handleSubmit}
+          disabled={loading}
+        >
           {loading ? 'Saving…' : 'Save Task'}
         </button>
       </div>
