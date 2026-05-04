@@ -43,3 +43,13 @@ const PORT = process.env.PORT || 5000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
+
+const fs = require('fs');
+app.get('/debug', (req, res) => {
+  const distPath = path.join(__dirname, '../../frontend/dist');
+  res.json({
+    distExists: fs.existsSync(distPath),
+    dirname: __dirname,
+    distPath: distPath
+  });
+});
