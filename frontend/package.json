@@ -1,21 +1,15 @@
 {
-  "name": "taskflow-frontend",
+  "name": "taskflow",
   "version": "1.0.0",
-  "private": true,
-  "type": "module",
+  "description": "Full-stack Task Manager App",
   "scripts": {
-    "dev": "vite",
-    "build": "vite build",
-    "preview": "vite preview"
-  },
-  "dependencies": {
-    "axios": "^1.6.5",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
-    "react-router-dom": "^6.21.3",
-    "vite": "^5.0.0"
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npm run dev",
+    "build": "cd frontend && npm install --include=dev && npx vite build",
+    "start": "cd backend && npm install && node src/index.js"
   },
   "devDependencies": {
-    "@vitejs/plugin-react": "^4.2.1"
+    "concurrently": "^8.2.2"
   }
 }
